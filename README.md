@@ -16,3 +16,7 @@ DB_URL=postgresql+psycopg://<user>:<password>@<host>:<port>/<database>
 
 
 Run migrations:
+
+```
+uv run alembic upgrade head
+```
