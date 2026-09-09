@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: curbside
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: curbside
+    ports:
+      - "5432:5432"
