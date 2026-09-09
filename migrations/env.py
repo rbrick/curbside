@@ -7,7 +7,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from takehome.models import Base
+from takehome.models import Base, Product, Reservation, Status
 
 load_dotenv()
 

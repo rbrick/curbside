@@ -16,10 +16,10 @@ engine = create_engine(os.getenv("DB_URL"))
 Session = sessionmaker(engine)
 
 products = [
-    {"name": "Apple", "quantity": 10},
-    {"name": "Banana", "quantity": 20},
-    {"name": "Orange", "quantity": 15},
-    {"name": "Potato Chips", "quantity": 8}
+    {"name": "Apple", "total_quantity": 10, "available_quantity": 10, "price_cents": 100},
+    {"name": "Banana", "total_quantity": 20, "available_quantity": 20, "price_cents": 50},
+    {"name": "Orange", "total_quantity": 15, "available_quantity": 15, "price_cents": 75},
+    {"name": "Potato Chips", "total_quantity": 8, "available_quantity": 8, "price_cents": 300}
 ]
 
 def seed_products():
@@ -31,7 +31,9 @@ def seed_products():
             if not existing:
                 session.add(Product(**data))
             else: 
-                existing.quantity = data["quantity"]
+                existing.available_quantity = data["available_quantity"]
+                existing.total_quantity = data["total_quantity"]
+                existing.price_cents = data["price_cents"]
                 
         session.commit()
     
