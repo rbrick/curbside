@@ -32,7 +32,7 @@ class ReservationService:
             reserved_quantity = sum(reservation.quantity for reservation in reservations)
             
             return reserved_quantity
-        
+    
     
     def create(self, product_id: int, quantity: int):
         if quantity <= 0:
@@ -53,10 +53,34 @@ class ReservationService:
             
             reservation = Reservation(product_id=product_id, quantity=quantity) # make a reservation
             session.add(reservation)
-        pass
+        return reservation
     
     def confirm(self, reservation_id: int):
-        pass
+        with self.session() as session:
+            
+            # here we also need to reduce available quantity of the product
+            reservation = session.execute(select(Reservation).where(Reservation.id == reservation_id)).scalars().first()
+            if not reservation:
+                # TODO: robust error handling for missing reservation
+                raise ValueError("Reservation not found")
+            
+            reservation.status = Status.CONFIRMED
+            product = session.scalars(select(Product).where(Product.id == reservation.product_id)).first()
+            if product:
+                product.available_quantity -= reservation.quantity
+                product.total_quantity -= reservation.quantity
+                session.add(product)
+            session.add(reservation)
+        return reservation
     
     def release(self, reservation_id: int):
-        pass
+        # release cancels the reservation
+        with self.session() as session:
+            reservation = session.execute(select(Reservation).where(Reservation.id == reservation_id)).scalars().first()
+            if not reservation:
+                # TODO: robust error handling for missing reservation
+                raise ValueError("Reservation not found")
+            
+            reservation.status = Status.CANCELLED
+            session.add(reservation)
+        return reservation
