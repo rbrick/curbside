@@ -5,13 +5,16 @@ from takehome.models import Product, Reservation, Status
 
 class ProductService:
     def __init__(self, session_maker: sessionmaker[Session]):
-        self.session = session_maker
+        self.session_maker = session_maker
 
     def get_all_products(self):
-        with self.session() as session:
-            return session.execute(select(Product)).scalars().all()
-    
-
+        with self.session_maker() as session:
+            products = session.execute(select(Product)).scalars().all()
+            reservations = session.scalars(select(Reservation).where(Reservation.status == Status.PENDING)).all()
+        
+            for product in products:
+                product.available_quantity -= sum(reservation.quantity for reservation in reservations if reservation.product_id == product.id)
+            return products
 
 class ReservationService:
     def __init__(self, session_maker: sessionmaker[Session]):

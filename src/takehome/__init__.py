@@ -21,8 +21,8 @@ def init_db():
     Base.metadata.create_all(engine)
 
 
-product_service = ProductService(Session()) 
-reservation_service = ReservationService(Session())
+product_service = ProductService(Session) 
+reservation_service = ReservationService(Session)
 
 @app.get("/products")
 def get_products():
