@@ -1,3 +1,7 @@
+# what is this?
+
+this is an example takehome project I did for myself as a learning exercise
+
 # Project Setup
 
 
